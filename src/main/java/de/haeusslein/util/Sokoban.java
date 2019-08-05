@@ -7,24 +7,24 @@ public class Sokoban {
     }
 
 
-    public static boolean moveNorth(char[][] level) {
+    public boolean moveNorth(char[][] level) {
         return move(level, Direction.NORTH);
     }
 
-    public static boolean moveEast(char[][] level) {
+    public boolean moveEast(char[][] level) {
         return move(level, Direction.EAST);
     }
 
-    public static boolean moveSouth(char[][] level) {
+    public boolean moveSouth(char[][] level) {
         return move(level, Direction.SOUTH);
     }
 
-    public static boolean moveWest(char[][] level) {
+    public boolean moveWest(char[][] level) {
         return move(level, Direction.WEST);
     }
 
 
-    private static boolean move(char[][] level, Direction direction) {
+    private boolean move(char[][] level, Direction direction) {
 
         // find the player
         Pair<Integer, Integer> playerPosition = findPlayer(level);
@@ -92,7 +92,7 @@ public class Sokoban {
      * @param sokoban level to search in
      * @return Postition of the Player, (-1,-1) when not found
      */
-    public static Pair<Integer, Integer> findPlayer(char[][] sokoban) {
+    public Pair<Integer, Integer> findPlayer(char[][] sokoban) {
         for (int i = 0; i < sokoban.length; i++) {
             for (int j = 0; j < sokoban.length; j++) {
                 if (sokoban[i][j] == '@') {
@@ -104,7 +104,7 @@ public class Sokoban {
     }
 
 
-    public static String sokobanToString(char[][] level) {
+    public String sokobanToString(char[][] level) {
         String levelAsString = "";
         for (int i = 0; i < level.length; i++) {
             for (int j = 0; j < level.length; j++) {
