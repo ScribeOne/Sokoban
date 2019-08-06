@@ -1,5 +1,7 @@
 package de.haeusslein.util;
 
+import de.haeusslein.util.Pair;
+
 public class Sokoban {
 
     private enum Direction {
@@ -101,6 +103,10 @@ public class Sokoban {
             }
         }
         return new Pair<>(-1, -1);
+    }
+
+    public void printSokoban(char[][] level) {
+        System.out.println(sokobanToString(level));
     }
 
 
