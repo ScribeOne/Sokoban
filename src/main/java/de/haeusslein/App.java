@@ -16,7 +16,7 @@ public class App {
     public static void main(String[] args) {
         startGame();
     }
-	/* some rnd comment */
+
     private static void startGame() {
         Scanner scanner;
         boolean keepPlaying = true;
