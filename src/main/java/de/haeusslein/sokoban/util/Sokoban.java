@@ -73,7 +73,6 @@ public class Sokoban {
         // Target is a box
         if (level[playerXNext][playerYNext] == '$') {
 
-
             // Field behind Target is empty
             if (level[playerXNext2][playerYNext2] == '.') {
 

@@ -1,15 +1,23 @@
 package de.haeusslein.sokoban;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import de.haeusslein.sokoban.util.Sokoban;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import java.io.*;
 import java.util.LinkedList;
-import java.util.List;
 
 public class SokobanLevel {
     private String levelName = "";
@@ -18,6 +26,81 @@ public class SokobanLevel {
     private int height = 0;
     private char[][] levelData;
 
+    public SokobanLevel(String filename) {
+        Document doc = loadFile(filename);
+        validate(filename);
+        parseDocument(doc);
+    }
+
+    private void validate(String filename) {
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Source xmlFile = new StreamSource(getClass().getResourceAsStream("/" + filename));
+
+        try {
+            Schema schema = schemaFactory.newSchema(new File(getClass().getResource("/sokoban.xsd").getFile()));
+            Validator validator = schema.newValidator();
+            validator.validate(xmlFile);
+            System.out.println(filename + " is valid");
+        } catch (SAXException e) {
+            System.out.println(filename + " is NOT valid reason:" + e);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private Document loadFile(String filename) {
+        Document document = null;
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            document = builder.parse(getClass().getResourceAsStream("/" + filename));
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        return document;
+    }
+
+
+    private void parseDocument(Document document) {
+        document.getDocumentElement().normalize();
+
+        NodeList authorNodes = document.getElementsByTagName("Author");
+        for (int i = 0; i < authorNodes.getLength(); i++) {
+            Node authorNode = authorNodes.item(i);
+            if (authorNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) authorNode;
+                authors.add(element.getTextContent());
+            }
+        }
+
+        levelName = document.getElementsByTagName("LevelName").item(0).getTextContent();
+
+        Node levelDataNode = document.getElementsByTagName("LevelData").item(0);
+        width = Integer.parseInt(levelDataNode.getAttributes().getNamedItem("width").getTextContent());
+        height = Integer.parseInt(levelDataNode.getAttributes().getNamedItem("height").getTextContent());
+
+        levelData = new char[height][width];
+
+        String lines[] = levelDataNode.getTextContent().trim().split("\\r?\\n");
+        for (int i = 0; i < lines.length; i++) {
+            char[] line = lines[i].trim().toCharArray();
+            for (int j = 0; j < line.length; j++) {
+                levelData[i][j] = line[j];
+            }
+
+        }
+
+
+    }
+
+
+
+    /*
     public SokobanLevel(String filename) {
         try (InputStream input = getClass().getResourceAsStream("/" + filename)) {
             XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -73,7 +156,7 @@ public class SokobanLevel {
                                 case "leveldata":
                                     char[] line = parser.getText().toCharArray();
                                     for (int i = 0; i < (height - 1); i++) {
-                                        System.out.println("adding! linecounter: " + lineCounter + " i: " + i);
+                                        System.out.println("adding" + line[i] +"! linecounter: " + lineCounter + " i: " + i);
                                         levelData[lineCounter][i] = line[i];
                                     }
                                     lineCounter++;
@@ -92,12 +175,16 @@ public class SokobanLevel {
             e.printStackTrace();
         }
     }
+    */
 
     public void printData() {
         System.out.println("Authors: " + authors);
         System.out.println("Level name: " + levelName);
         System.out.println("width:" + width);
         System.out.println("height: " + height);
+        for (char[] line : levelData) {
+            System.out.println(line);
+        }
     }
 
 
