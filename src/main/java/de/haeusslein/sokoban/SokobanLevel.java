@@ -1,6 +1,7 @@
 package de.haeusslein.sokoban;
 
-import de.haeusslein.sokoban.util.Sokoban;
+import de.haeusslein.sokoban.model.Difficulty;
+import de.haeusslein.sokoban.util.LevelDataException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,11 +26,16 @@ public class SokobanLevel {
     private int width = 0;
     private int height = 0;
     private char[][] levelData;
+    private Difficulty difficulty;
 
     public SokobanLevel(String filename) {
         Document doc = loadFile(filename);
         validate(filename);
-        parseDocument(doc);
+        try {
+            parseDocument(doc);
+        } catch (LevelDataException e) {
+            e.printStackTrace();
+        }
     }
 
     private void validate(String filename) {
@@ -40,7 +46,6 @@ public class SokobanLevel {
             Schema schema = schemaFactory.newSchema(new File(getClass().getResource("/sokoban.xsd").getFile()));
             Validator validator = schema.newValidator();
             validator.validate(xmlFile);
-            System.out.println(filename + " is valid");
         } catch (SAXException e) {
             System.out.println(filename + " is NOT valid reason:" + e);
         } catch (IOException e) {
@@ -66,7 +71,7 @@ public class SokobanLevel {
     }
 
 
-    private void parseDocument(Document document) {
+    private void parseDocument(Document document) throws LevelDataException {
         document.getDocumentElement().normalize();
 
         NodeList authorNodes = document.getElementsByTagName("Author");
@@ -78,7 +83,19 @@ public class SokobanLevel {
             }
         }
 
-        levelName = document.getElementsByTagName("LevelName").item(0).getTextContent();
+        NodeList nameList = document.getElementsByTagName("LevelName");
+        if (nameList.getLength() == 0) {
+            levelName = "unknown Name";
+        } else {
+            levelName = nameList.item(0).getTextContent();
+        }
+
+        NodeList difficultyNodes = document.getElementsByTagName("Difficulty");
+        if (difficultyNodes.getLength() == 0) {
+            difficulty = Difficulty.NONE;
+        } else {
+            difficulty = Difficulty.valueOf(difficultyNodes.item(0).getTextContent());
+        }
 
         Node levelDataNode = document.getElementsByTagName("LevelData").item(0);
         width = Integer.parseInt(levelDataNode.getAttributes().getNamedItem("width").getTextContent());
@@ -87,8 +104,18 @@ public class SokobanLevel {
         levelData = new char[height][width];
 
         String lines[] = levelDataNode.getTextContent().trim().split("\\r?\\n");
+
+        if (lines.length != height) {
+            throw new LevelDataException("Height Error");
+        }
+
         for (int i = 0; i < lines.length; i++) {
             char[] line = lines[i].trim().toCharArray();
+
+            if (line.length != width) {
+                throw new LevelDataException("Width Error");
+            }
+
             for (int j = 0; j < line.length; j++) {
                 levelData[i][j] = line[j];
             }
@@ -182,10 +209,34 @@ public class SokobanLevel {
         System.out.println("Level name: " + levelName);
         System.out.println("width:" + width);
         System.out.println("height: " + height);
+        System.out.println("Difficulty:" + difficulty.toString());
         for (char[] line : levelData) {
             System.out.println(line);
         }
     }
 
 
+    public String getLevelName() {
+        return levelName;
+    }
+
+    public LinkedList<String> getAuthors() {
+        return authors;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public char[][] getLevelData() {
+        return levelData;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
 }

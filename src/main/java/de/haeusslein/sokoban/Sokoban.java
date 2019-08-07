@@ -1,4 +1,4 @@
-package de.haeusslein.sokoban.util;
+package de.haeusslein.sokoban;
 
 import de.haeusslein.sokoban.util.Pair;
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sokoban:Sokoban xmlns:sokoban="https://pvs.informatik.uni-ulm.de/sokoban">
+    <Author>Michael Häußlein</Author>
+    <LevelName>Best Sokoban EUW</LevelName>
+    <Difficulty>MEDIUM</Difficulty>
+    <LevelData width="5" height="5">#####
+        #...#
+        #@$.#
+        #...#
+        #####
+    </LevelData>
+</sokoban:Sokoban>
