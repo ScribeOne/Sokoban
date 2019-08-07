@@ -1,6 +1,7 @@
-package de.haeusslein;
+package de.haeusslein.sokoban.App;
 
-import de.haeusslein.util.Sokoban;
+import de.haeusslein.sokoban.SokobanLevel;
+import de.haeusslein.sokoban.util.Sokoban;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,9 +15,15 @@ import java.util.Set;
  */
 public class App {
     public static void main(String[] args) {
-        startGame();
+
+        SokobanLevel sokobanLevel = new SokobanLevel("Sokoban-D.xml");
+
+        sokobanLevel.printData();
+
     }
-	/* some rnd comment */
+
+
+    /* some rnd comment */
     private static void startGame() {
         Scanner scanner;
         boolean keepPlaying = true;

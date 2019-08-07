@@ -1,0 +1,8 @@
+<!ELEMENT uebungsbetreieb (uebungsblatt*)>
+<!ELEMENT uebungsblatt (nummer, abgabedatum, aufgabe+)>
+<!ELEMENT nummer (#PCDATA)>
+<!ELEMENT abgabedatum (#PCDATA)>
+<!ELEMENT aufgabe (unteraufgabe*, thema, punkte)>
+<!ELEMENT unteraufgabe (nummer, punkte)>
+<!ELEMENT thema (#PCDATA)>
+<!ELEMENT punkte (#PCDATA)>

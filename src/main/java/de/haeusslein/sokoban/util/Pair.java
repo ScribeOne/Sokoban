@@ -1,4 +1,4 @@
-package de.haeusslein.util;
+package de.haeusslein.sokoban.util;
 
 public final class Pair<F extends Comparable<F>, S extends Comparable<S>> implements Comparable<Pair<F, S>> {
     private final F first;

@@ -1,6 +1,6 @@
-package de.haeusslein.util;
+package de.haeusslein.sokoban.util;
 
-import de.haeusslein.util.Pair;
+import de.haeusslein.sokoban.util.Pair;
 
 public class Sokoban {
 
